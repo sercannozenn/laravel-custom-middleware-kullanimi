@@ -18,7 +18,7 @@
     Proje şu anda çalışır durumda olacaktır.
 </p>
 
-## Middleware Kullanımı
+## İşlemler
 
 <p>
 Proje içerisinde iki adet controller oluşturulmuştur.<br>
@@ -26,73 +26,119 @@ Proje içerisinde iki adet controller oluşturulmuştur.<br>
         <li>
             <b>HomeController</b>
             <p>
-                <code>
+                <pre>
                     public function index()
                     {
                         return view('home');
                     }
-                </code>
+                </pre>
+            </p>
+            <p>
+                Burada sadece anasayfada hangi view geleceğini belirttik.
             </p>
         </li>
         <li>
-            <b>HomeController</b>
+            <b>Lang Controller</b><br>
+            <pre>
+                public function index($lang)
+                {
+                    $langs= ['tr', 'en'];
+                    if (in_array($lang, $langs))
+                    {
+                        Session::put('lang', $lang);
+                        return Redirect::back()->with('msj', 'Dil Değiştirildi');
+                    }
+                }
+            </pre>
+    <p>
+        Seçilebilecek dil dosyalarının isimlerini <b>langs</b> dizisinde tutuyoruz. URL'den gelecek olan <code>$lang</code> yani dil ismini bu dizi içerisinde var mı yok mu kontrol ettirerek var ise <code>Session</code> ile <b>lang</b> üzerinde tutuyoruz. Dil değişiklidi şeklinde bir alert verilebilecek şekilde geri gönderiyoruz.
+    </p>
         </li>
     </ul>
 </p>
 
-## About Laravel
+### Middleware Oluşturma
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+<pre>
+php artisan make:middleware Language
+</pre>
+<p>Komutu ile <b>Language Middleware</b> oluşturuyoruz. </p>
+<h5>Language Middleware İçi</h5>
+<pre>
+public function handle($request, Closure $next)
+    {
+        if ($lang= Session::get('lang'))
+        {
+            Lang::setLocale($lang);
+        }
+        return $next($request);
+    }
+    </pre>
+<p>
+    Bir önceki adımda <b>Session</b> da tutmuş olduğumuz <b>lang</b> değerimizi burada çağırıyoruz. Eğer varsa <b>$lang</b> değişkenine atıyoruz. <code>Lang::setLocale($lang)</code fonksiyonu ile de yeni dilimizi set ediyoruz. <br>
+    </p>
+ 
+ ### Route Oluşturma Web.php
+ 
+ <b>Birçok şekilde kullanımı olan root bölümünde karar bize kalmış oluyor. Şöyleki ister her bir get işleminin sonuna o gette çalışmasını istediğimiz middleware i verebiliriz. İstersek tüm requestlerde çalışacak şekilde middleware oluşturabiliriz istersek de belirlemiş olduğumuz gruba özel middleware oluşturabiliriz.</b> 
+ <pre>
+ Route::group(['middleware' => 'dil'],function (){
+    Route::GET('/', 'HomeController@index');
+    Route::GET('/lang/{lang}', 'LangController@index');
+});
+ </pre>
+<p>Yukarıki kodumuzda <b>dil</b> olarak oluşturduğum middleware altında gruplama işlemiyaptım. </p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Kernel.php Middleware i Aktif Etme
+<pre>
+ protected $middlewareGroups = [
+        'web' => [
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
+        'api' => [
+            'throttle:60,1',
+            'bindings',
+        ],
+        // bu alanı biz ekledik
+        //oluşturduğumuz Language Middlewaremizin yolunu gösteriyoruz. Routeta belirttiğimiz <b>dil</b> buradaki isimlendirme oluyor.
+        'dil' => [
+            \App\Http\Middleware\Language::class
+        ],
+        
+        // bu alanı biz ekledik
+        //Eğer yukarıdaki web alanına yolu göstermiş olsaydık tüm requestlerde çalışmasını sağlamış olacaktık. 
+        //Elbette hatırlatmakta fayda var. 
+        <br>
+        //Laravel 5.6 ve sonrasında bu şekilde oluyor daha önceki sürümlerde tüm requestlerde geçerli olmasını istiyorsak <b>middleware</b> dizisinin içerisine ekleme yapmalıydık.
+    ];
+</pre>
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of any modern web application framework, making it a breeze to get started learning the framework.
-
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell):
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Özel Bir Route a Middleware Verme
+<pre>
+protected <b>$routeMiddleware</b> = [
+        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'yeniDil' => \App\Http\Middleware\Language::class,
+    ];
+    </pre>
+<p><b>routeMiddleware</b> inin son satırına yapmış olduğumuz ekleme ile oluşturduğumuz yeniDil middlewarein yolunu gösterdik. <b>YeniDil isimli middleware i şimdi sadece hangi URL'de kullanmak istiyorsak o Route a ekleme yapacağız.
+    </p>
+    <pre>
+    Route::GET('/', 'HomeController@index')->middleware('yeniDil');
+    </pre>
+    <br>
+    <br>    
+### Umarım yararlı bir anlatım olmuştur. İyi kodlamalar dilerim.
+    
