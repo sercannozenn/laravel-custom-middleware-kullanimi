@@ -7,6 +7,37 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
 </p>
 
+## Proje Çalıştırma
+<p>
+    Projeyi <b>GIT</b> ile çektikten sonra, projenizin dosya dizinine gelerek terminalden <br><br>
+    <code>composer update</code><br><br>
+    <code>php artisan key:generate</code><br><br>
+    komutlarını çalıştırın.
+</p>
+<p>
+    Proje şu anda çalışır durumda olacaktır.
+</p>
+
+## Middleware Kullanımı
+
+<p>
+Proje içerisinde iki adet controller oluşturulmuştur.<br>
+    <ul>
+        <li>
+            <b>HomeController</b>
+            <p>
+                public function index()<br>
+                {
+                    return view('home');
+                }
+            </p>
+        </li>
+        <li>
+            <b>HomeController</b>
+        </li>
+    </ul>
+</p>
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
