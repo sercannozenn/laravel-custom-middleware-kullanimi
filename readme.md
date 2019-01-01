@@ -24,6 +24,9 @@
 Proje içerisinde iki adet controller oluşturulmuştur.<br>
     <ul>
         <li>
+            <code>php artisan make:controller controllerIsmi<code>
+        </li>
+        <li>
             <b>HomeController</b>
             <p>
                 <pre>
