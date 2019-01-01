@@ -78,7 +78,7 @@ public function handle($request, Closure $next)
     }
     </pre>
 <p>
-    Bir önceki adımda <b>Session</b> da tutmuş olduğumuz <b>lang</b> değerimizi burada çağırıyoruz. Eğer varsa <b>$lang</b> değişkenine atıyoruz. <code>Lang::setLocale($lang)</code fonksiyonu ile de yeni dilimizi set ediyoruz. <br>
+    Bir önceki adımda <b>Session</b> da tutmuş olduğumuz <b>lang</b> değerimizi burada çağırıyoruz. Eğer varsa <b>$lang</b> değişkenine atıyoruz. <code>Lang::setLocale($lang)</code> fonksiyonu ile de yeni dilimizi set ediyoruz. <br>
     </p>
  
  ### Route Oluşturma Web.php
