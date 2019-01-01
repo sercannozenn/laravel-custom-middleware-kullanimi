@@ -54,7 +54,7 @@ Proje içerisinde iki adet controller oluşturulmuştur.<br>
                 }
             </pre>
     <p>
-        Seçilebilecek dil dosyalarının isimlerini <b>langs</b> dizisinde tutuyoruz. URL'den gelecek olan <code>$lang</code> yani dil ismini bu dizi içerisinde var mı yok mu kontrol ettirerek var ise <code>Session</code> ile <b>lang</b> üzerinde tutuyoruz. Dil değişiklidi şeklinde bir alert verilebilecek şekilde geri gönderiyoruz.
+        Seçilebilecek dil dosyalarının isimlerini <b>langs</b> dizisinde tutuyoruz. URL'den gelecek olan <code>$lang</code> yani dil ismini bu dizi içerisinde var mı yok mu kontrol ettirerek var ise <code>Session</code> ile <b>lang</b> üzerinde tutuyoruz. Dil değiştirildi şeklinde bir alert verilebilecek şekilde geri gönderiyoruz.
     </p>
         </li>
     </ul>
