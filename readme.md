@@ -26,10 +26,12 @@ Proje içerisinde iki adet controller oluşturulmuştur.<br>
         <li>
             <b>HomeController</b>
             <p>
-                public function index()<br>
-                {
-                    return view('home');
-                }
+                <code>
+                    public function index()
+                    {
+                        return view('home');
+                    }
+                </code>
             </p>
         </li>
         <li>
